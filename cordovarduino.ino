@@ -17,19 +17,21 @@ void setup() {
  
 void loop() {
     int incomingBytes = Serial.available();
-    String inputData = "";
     
+    lcd.setCursor(0,0); lcd.print("                ");
+    lcd.setCursor(0,0); lcd.print("inBytes:"+String(incomingBytes));
+
+    String inputData = "";
     if (incomingBytes > 0) {
         for (int i=0; i<incomingBytes; i++){
-          inputData += String(Serial.read());
+          inputData += String( char(Serial.read()) );
         }
     } else {
-      inputData = "*no input data*";
+      inputData = "*no*";
     }
-    
-    lcd.clear();
-    lcd.home();
-    lcd.print(inputData);
+
+    lcd.setCursor(0,1); lcd.print("                ");
+    lcd.setCursor(0,1); lcd.print("inData:"+String(inputData));
     
     delay(loopTimeout);
 }
