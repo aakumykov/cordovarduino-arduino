@@ -14,8 +14,13 @@ LiquidCrystal_PCF8574 lcd(0x27);
 String readInputData(){
   int incomingBytes = Serial.available();
   Serial.println("input bytes: "+String(incomingBytes));
+  
   String data = "";
   if (incomingBytes > 0) {
+    
+    lcd.setCursor(0,0); lcd.print("                ");
+    lcd.setCursor(0,0); lcd.print("inBytes:"+String(incomingBytes));
+    
     for (int i=0; i<incomingBytes; i++) data += String( char(Serial.read()) );
     return data;
   } else {
@@ -31,13 +36,13 @@ void setup() {
 
     lcd.setCursor(0,0);
     lcd.print("*screen coords*");
-    
     lcd.setCursor(0,1);
     lcd.print("W"+String(writeInterval)+",R"+String(readInterval)+",D"+String(displayInterval));
-    
+
     delay(3000);
-    // стираю первую строку
-    lcd.setCursor(0,0); lcd.print("                ");
+
+    lcd.clear();
+    lcd.setCursor(0,0); lcd.print("inBytes:");
     
     Serial.begin(9600);
 }
@@ -61,8 +66,6 @@ void loop() {
   unsigned long currentDisplay = millis();
   if ((currentDisplay - lastDisplay) > displayInterval) {
     Serial.println("DISPLAY");
-    // lcd.setCursor(0,0); lcd.print("                ");
-    // lcd.setCursor(0,0); lcd.print("inBytes:"+String(incomingBytes));
     lcd.setCursor(0,1); lcd.print("                ");
     lcd.setCursor(0,1); lcd.print("inData:"+String(inputData));
     lastDisplay = currentDisplay;
