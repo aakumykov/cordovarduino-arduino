@@ -2,8 +2,23 @@
 #include <LiquidCrystal_PCF8574.h>
 
 LiquidCrystal_PCF8574 lcd(0x27);
-int loopTimeout = 500;
- 
+unsigned long readTimeout = 5;
+unsigned long displayTimeout = 200;
+
+String readInputData(){
+  int incomingBytes = Serial.available();
+  if (incomingBytes > 0) {
+    String data = "";
+    for (int i=0; i<incomingBytes; i++){
+      data += String( char(Serial.read()) );
+    }
+  } else {
+    data = "*no*";
+  }
+  return data;
+}
+
+
 void setup() {
     lcd.begin(16,2);
     lcd.setBacklight(255);
@@ -16,20 +31,16 @@ void setup() {
 }
  
 void loop() {
-    int incomingBytes = Serial.available();
-    
+  unsigned long currentRead = millis();
+  if (currentRead - lastRead > readTimeout) {
+      String inputData = readInputData();
+  } else {
+    lastRead = currentRead;
+  }
+  
     lcd.setCursor(0,0); lcd.print("                ");
     lcd.setCursor(0,0); lcd.print("inBytes:"+String(incomingBytes));
-
-    String inputData = "";
-    if (incomingBytes > 0) {
-        for (int i=0; i<incomingBytes; i++){
-          inputData += String( char(Serial.read()) );
-        }
-    } else {
-      inputData = "*no*";
-    }
-
+    
     lcd.setCursor(0,1); lcd.print("                ");
     lcd.setCursor(0,1); lcd.print("inData:"+String(inputData));
     
