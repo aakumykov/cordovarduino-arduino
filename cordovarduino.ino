@@ -8,23 +8,19 @@ unsigned long displayInterval = 1000;
 unsigned long lastWrite = 0;
 unsigned long lastRead = 0;
 unsigned long lastDisplay = 0;
-String inputData[2] = {"0",""};
+String inputData = "";
 LiquidCrystal_PCF8574 lcd(0x27);
 
-String* readInputData(){
+String readInputData(){
   int incomingBytes = Serial.available();
   Serial.println("input bytes: "+String(incomingBytes));
-  
   String data = "";
   if (incomingBytes > 0) {
-    for (int i=0; i<incomingBytes; i++) {
-      data += String( char(Serial.read()) );
-    }
+    for (int i=0; i<incomingBytes; i++) data += String( char(Serial.read()) );
+    return data;
+  } else {
+    return "";
   }
-
-  String res[2] = { String(incomingBytes), data};
-  
-  return res;
 }
 
 
@@ -57,23 +53,18 @@ void loop() {
   unsigned long currentRead = millis();
   if ((currentRead - lastRead) > readInterval) {
       //Serial.println("read");
-      inputData = readInputData();
+      String newData = readInputData();
+      if (newData != "") inputData = newData;
       lastRead = currentRead;
   }
 
   unsigned long currentDisplay = millis();
   if ((currentDisplay - lastDisplay) > displayInterval) {
     Serial.println("DISPLAY");
-
-    // показываю новые данные, если они есть
-    if (inputData[1] != "") {
-      lcd.setCursor(0,0); lcd.print("                ");
-      lcd.setCursor(0,0); lcd.print("inBytes:"+String(inputData[0]));
-      
-      lcd.setCursor(0,1); lcd.print("                ");
-      lcd.setCursor(0,1); lcd.print("inData:"+String(inputData[1]));
-    }
-    
+    // lcd.setCursor(0,0); lcd.print("                ");
+    // lcd.setCursor(0,0); lcd.print("inBytes:"+String(incomingBytes));
+    lcd.setCursor(0,1); lcd.print("                ");
+    lcd.setCursor(0,1); lcd.print("inData:"+String(inputData));
     lastDisplay = currentDisplay;
   }
 }
