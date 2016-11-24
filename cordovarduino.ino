@@ -1,16 +1,15 @@
 #include <Wire.h>
 #include <LiquidCrystal_PCF8574.h>
 
-//unsigned long writeInterval = 5000;
-unsigned long readInterval = 10;
-unsigned long displayInterval = 100;
+unsigned long readInterval = 200;
+unsigned long displayInterval = 500;
 
-//unsigned long lastWrite = 0;
 unsigned long lastRead = 0;
 unsigned long lastDisplay = 0;
 String inputData = "";
 LiquidCrystal_PCF8574 lcd(0x27);
 
+//String readInputData(byte len){
 String readInputData(){
   int incomingBytes = Serial.available();
   //Serial.println("input bytes: "+String(incomingBytes));
@@ -59,18 +58,16 @@ void setup() {
 }
  
 void loop() {
-//  unsigned long currentWrite = millis();
-//  if ((currentWrite - lastWrite) > writeInterval) {
-//      lastWrite = currentWrite;
-//  }
-  
+  // чтение
   unsigned long currentRead = millis();
   if ((currentRead - lastRead) > readInterval) {
+      //String newData = readInputData(7);
       String newData = readInputData();
       if (newData != "") inputData = newData;
       lastRead = currentRead;
   }
 
+  // отображение
   unsigned long currentDisplay = millis();
   if ((currentDisplay - lastDisplay) > displayInterval) {
     if (inputData != "") {
