@@ -1,13 +1,16 @@
 #include <Wire.h>
 #include <LiquidCrystal_PCF8574.h>
+LiquidCrystal_PCF8574 lcd(0x27);
 
-unsigned long readInterval = 200;
-unsigned long displayInterval = 500;
-
+unsigned long readInterval = 1;
+unsigned long displayInterval = 200;
 unsigned long lastRead = 0;
 unsigned long lastDisplay = 0;
 String inputData = "";
-LiquidCrystal_PCF8574 lcd(0x27);
+char lineEnd = ';';
+String bytesPrefix = "inBytes:";
+String dataPrefix = "inData:";
+
 
 //String readInputData(byte len){
 String readInputData(){
@@ -29,13 +32,15 @@ String readInputData(){
 }
 
 void displayBytes(int b){
-  lcd.setCursor(0,0); lcd.print("                ");
-  lcd.setCursor(0,0); lcd.print("inBytes: "+String(b));
+  String msg = String(b);
+  lcd.setCursor(0,msg.length());
+  lcd.print(msg);
 }
 
 void displayData(String d){
-  lcd.setCursor(0,1); lcd.print("                ");
-  lcd.setCursor(0,1); lcd.print("inData: "+d);
+  String msg = String(d);
+  lcd.setCursor(0,msg.length());
+  lcd.print(msg);
 }
 
 
@@ -50,9 +55,12 @@ void setup() {
     lcd.print("R:"+String(readInterval)+", D:"+String(displayInterval));
 
     delay(3000);
+    lcd.clear();
 
-    displayBytes(0);
-    displayData("-");
+    lcd.setCursor(0,0);
+    lcd.print(bytesPrefix);
+    lcd.setCursor(0,1);
+    lcd.print(dataPrefix);
     
     Serial.begin(9600);
 }
@@ -60,12 +68,19 @@ void setup() {
 void loop() {
   // чтение
   unsigned long currentRead = millis();
-  if ((currentRead - lastRead) > readInterval) {
-      //String newData = readInputData(7);
-      String newData = readInputData();
-      if (newData != "") inputData = newData;
-      lastRead = currentRead;
-  }
+  //if ((currentRead - lastRead) > readInterval) {
+      String tmpString = "";
+      if (Serial.available()) {
+        char piece = Serial.read();
+        if (piece == lineEnd) {
+          inputData = tmpString;
+          tmpString = "";
+        } else {
+          tmpString += piece;
+        }
+      }
+      //lastRead = currentRead;
+  //}
 
   // отображение
   unsigned long currentDisplay = millis();
