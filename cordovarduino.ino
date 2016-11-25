@@ -68,7 +68,7 @@ void setup() {
  
 void loop() {
   // чтение
-  if (Serial.available()){
+  if (Serial.available() > 0){
     inputData = "";
     String inputData = Serial.readStringUntil(lineEnd);
   }
