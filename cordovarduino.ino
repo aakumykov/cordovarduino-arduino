@@ -12,13 +12,20 @@ int bytesPrefixLength = bytesPrefix.length();
 int dataPrefixLength = dataPrefix.length();
 
 void displayBytes(int b){
+  String msg = String(b);
   lcd.setCursor(bytesPrefixLength, 0);
-  lcd.print(String(b));
+  lcd.print(msg);
+  String spacer = "";
+  for (byte i=0; i<(16-(dataPrefixLength+msg.length())); i++) spacer.concat(" ");
+  lcd.print(spacer);
 }
 
 void displayData(String d){
   lcd.setCursor(dataPrefixLength, 1);
   lcd.print(d);
+  String spacer = "";
+  for (byte i=0; i<(16-(dataPrefixLength+d.length())); i++) spacer.concat(" ");
+  lcd.print(spacer);
 }
 
 void setup() {
