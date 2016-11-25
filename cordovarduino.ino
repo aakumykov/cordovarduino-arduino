@@ -68,24 +68,30 @@ void setup() {
  
 void loop() {
   // чтение
-  unsigned long currentRead = millis();
   String tmpString = "";
+  
   if (Serial.available()) {
+
+    //tmpString = Serial.readStringUntil(lineEnd);
+    
     char piece = Serial.read();
-    if (piece == lineEnd) {
-      inputData = tmpString;
-      tmpString = "";
-    } else {
+    
+    while (piece != lineEnd) {
       tmpString += piece;
     }
+    
+    inputData = tmpString;
+    tmpString = "";
   }
+
 
   // отображение
   unsigned long currentDisplay = millis();
   if ((currentDisplay - lastDisplay) > displayInterval) {
-    //if (inputData != "") {
-      displayData( String( random(1,999) ) );
-    //}
+    if (inputData != "") {
+      //displayData( String( random(1,999) ) );
+      displayData(inputData);
+    }
     lastDisplay = currentDisplay;
   }
 }
