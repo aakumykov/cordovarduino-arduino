@@ -62,36 +62,25 @@ void setup() {
     delay(1000);
     lcd.clear();
 
-    lcd.setCursor(0,0); lcd.print(bytesPrefix);
-    lcd.setCursor(0,1); lcd.print(dataPrefix);
+//    lcd.setCursor(0,0); lcd.print(bytesPrefix);
+//    lcd.setCursor(0,1); lcd.print(dataPrefix);
 }
  
 void loop() {
   // чтение
-  String tmpString = "";
-  
-  if (Serial.available()) {
-
-    //tmpString = Serial.readStringUntil(lineEnd);
-    
-    char piece = Serial.read();
-    
-    while (piece != lineEnd) {
-      tmpString += piece;
-    }
-    
-    inputData = tmpString;
-    tmpString = "";
+  if (Serial.available()){
+    inputData = "";
+    String inputData = Serial.readStringUntil(lineEnd);
   }
-
 
   // отображение
   unsigned long currentDisplay = millis();
   if ((currentDisplay - lastDisplay) > displayInterval) {
-    if (inputData != "") {
-      //displayData( String( random(1,999) ) );
-      displayData(inputData);
-    }
+//    if (inputData != "") {
+//      displayData(inputData);
+//    }
+    lcd.home();
+    lcd.print(inputData);
     lastDisplay = currentDisplay;
   }
 }
