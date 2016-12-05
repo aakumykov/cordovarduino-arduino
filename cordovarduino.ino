@@ -37,6 +37,8 @@ void setup() {
   lcd.home(); lcd.clear();
   lcd.setCursor(0,0); lcd.print(bytesPrefix);
   lcd.setCursor(0,1); lcd.print(dataPrefix);
+
+  Serial.println("Setup finish.");
 }
 
 void loop() {
